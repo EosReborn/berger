@@ -1,99 +1,1478 @@
-
 <!DOCTYPE html>
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Berger Transport</title>
-<link rel="stylesheet" href="style.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Berger Transport KFT – Logisztika & Fuvarozás</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080b0f;
+  --bg2: #0e1218;
+  --bg3: #141820;
+  --gold: #f0a500;
+  --gold2: #d48e00;
+  --gold-dim: rgba(240,165,0,0.12);
+  --gold-glow: rgba(240,165,0,0.25);
+  --text: #eef0f4;
+  --muted: #6b7280;
+  --muted2: #9ca3af;
+  --border: rgba(240,165,0,0.13);
+  --border2: rgba(255,255,255,0.06);
+  --nav: 70px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Syne',sans-serif;
+  overflow-x:hidden;cursor:none;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── CURSOR ── */
+#cur-dot,#cur-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:10000;border-radius:50%;transform:translate(-50%,-50%)}
+#cur-dot{width:6px;height:6px;background:var(--gold);transition:transform .1s}
+#cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);opacity:.45;transition:transform .15s ease,width .25s,height .25s,opacity .25s}
+body.link-hover #cur-ring{width:52px;height:52px;opacity:.25}
+
+/* ── PROGRESS BAR ── */
+#prog{position:fixed;top:var(--nav);left:0;height:2px;background:var(--gold);width:0;z-index:999;transition:width .08s linear;pointer-events:none}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(16px,5vw,64px);
+  z-index:900;transition:background .4s,box-shadow .4s;
+}
+nav.solid{background:rgba(8,11,15,0.95);backdrop-filter:blur(18px);box-shadow:0 1px 0 var(--border)}
+
+.logo{display:flex;align-items:center;gap:11px;text-decoration:none;cursor:pointer}
+.logo-hex{
+  width:38px;height:38px;background:var(--gold);
+  clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+  display:flex;align-items:center;justify-content:center;
+  animation:hexPulse 3.5s ease-in-out infinite;flex-shrink:0;
+}
+@keyframes hexPulse{0%,100%{filter:drop-shadow(0 0 0 transparent)}50%{filter:drop-shadow(0 0 10px rgba(240,165,0,.5))}}
+.logo-hex svg{width:20px;height:20px;fill:#080b0f}
+.logo-words{display:flex;flex-direction:column;line-height:1.1}
+.logo-words b{font-family:'Bebas Neue',sans-serif;font-size:1.35rem;letter-spacing:.07em;color:var(--text)}
+.logo-words small{font-size:.58rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+
+.nav-menu{display:flex;list-style:none;gap:2px}
+.nav-menu a{
+  display:block;padding:9px 17px;
+  font-size:.78rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;color:var(--muted);position:relative;transition:color .25s;
+}
+.nav-menu a::after{
+  content:'';position:absolute;bottom:4px;left:17px;right:17px;height:1px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s;
+}
+.nav-menu a:hover,.nav-menu a.on{color:var(--text)}
+.nav-menu a:hover::after,.nav-menu a.on::after{transform:scaleX(1)}
+.nav-menu .cta-link a{
+  background:var(--gold);color:#080b0f;
+  padding:9px 22px;font-weight:700;
+  clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%);
+  transition:background .2s,transform .2s;
+}
+.nav-menu .cta-link a::after{display:none}
+.nav-menu .cta-link a:hover{background:var(--gold2);transform:translateY(-1px);color:#080b0f}
+
+.burger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px}
+.burger span{display:block;width:22px;height:2px;background:var(--text);transition:transform .3s,opacity .3s;border-radius:1px}
+.burger.x span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.x span:nth-child(2){opacity:0}
+.burger.x span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ── MOBILE OVERLAY ── */
+.mob-overlay{
+  display:none;position:fixed;inset:0;z-index:850;
+  background:rgba(8,11,15,.97);backdrop-filter:blur(24px);
+  flex-direction:column;align-items:center;justify-content:center;gap:6px;
+}
+.mob-overlay.open{display:flex}
+.mob-overlay a{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.4rem,9vw,4rem);letter-spacing:.05em;
+  text-decoration:none;color:var(--muted2);
+  transition:color .2s;
+  opacity:0;transform:translateY(18px);
+  animation:mobIn .35s forwards;
+}
+.mob-overlay a:nth-child(1){animation-delay:.05s}
+.mob-overlay a:nth-child(2){animation-delay:.1s}
+.mob-overlay a:nth-child(3){animation-delay:.15s}
+.mob-overlay a:nth-child(4){animation-delay:.2s}
+.mob-overlay a:hover{color:var(--gold)}
+@keyframes mobIn{to{opacity:1;transform:translateY(0)}}
+
+/* ── PAGES ── */
+.page{display:none;min-height:100vh;padding-top:var(--nav);animation:fadeSlide .45s ease}
+.page.active{display:block}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SHARED HELPERS ── */
+.lbl{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+  margin-bottom:10px;
+}
+.lbl::before{content:'';width:22px;height:1px;background:var(--gold)}
+.sec-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.4rem,6vw,4.8rem);
+  line-height:.95;letter-spacing:.02em;margin-bottom:14px;
+}
+.sec-sub{color:var(--muted2);font-size:.95rem;line-height:1.72;max-width:500px;margin-bottom:52px}
+section{padding:clamp(64px,10vw,128px) clamp(16px,5vw,72px)}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.1s}.reveal.d2{transition-delay:.2s}.reveal.d3{transition-delay:.3s}.reveal.d4{transition-delay:.4s}
+
+/* ── TICKER ── */
+.ticker{overflow:hidden;background:var(--gold);padding:11px 0}
+.ticker-track{display:flex;width:max-content;animation:tickLeft 28s linear infinite}
+.ticker-item{
+  display:flex;align-items:center;gap:14px;padding:0 28px;
+  font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:.1em;
+  color:#080b0f;white-space:nowrap;
+}
+.ticker-dot{width:5px;height:5px;background:rgba(8,11,15,.35);border-radius:50%;flex-shrink:0}
+@keyframes tickLeft{to{transform:translateX(-50%)}}
+
+/* ── BTN ── */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:13px 28px;font-weight:700;font-size:.82rem;
+  letter-spacing:.09em;text-transform:uppercase;text-decoration:none;
+  border:none;cursor:pointer;font-family:'Syne',sans-serif;
+  clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%);
+  transition:transform .2s,background .2s,color .2s;
+}
+.btn svg{width:15px;height:15px;flex-shrink:0}
+.btn-gold{background:var(--gold);color:#080b0f}
+.btn-gold:hover{background:var(--gold2);transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.18);clip-path:none}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px)}
+.btn-dark{background:#080b0f;color:var(--gold)}
+.btn-dark:hover{background:#0e1218;transform:translateY(-2px)}
+
+/* ══════════════════════════════════
+   HOME PAGE
+══════════════════════════════════ */
+.hero{
+  position:relative;min-height:calc(100vh - var(--nav));
+  display:flex;align-items:center;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 70% 55% at 68% 50%, rgba(240,165,0,.07) 0%, transparent 65%),
+    radial-gradient(ellipse 35% 45% at 15% 75%, rgba(240,165,0,.04) 0%, transparent 60%);
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(240,165,0,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(240,165,0,.035) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black,transparent);
+}
+/* Diagonal speed-lines */
+.speed-lines{position:absolute;right:0;top:0;width:55%;height:100%;overflow:hidden;pointer-events:none}
+.speed-lines svg{width:100%;height:100%}
+
+.hero-inner{
+  position:relative;z-index:2;
+  padding:clamp(48px,8vw,96px) clamp(16px,5vw,72px);
+  max-width:700px;
+}
+.hero-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--gold-dim);border:1px solid var(--border);
+  padding:5px 14px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:26px;
+  animation:fadeUp .55s ease both;
+}
+.hero-chip::before{content:'';width:7px;height:7px;background:var(--gold);border-radius:50%;animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+h1.htitle{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.8rem,10vw,7.8rem);
+  line-height:.92;letter-spacing:.015em;
+  margin-bottom:26px;
+  animation:fadeUp .55s .08s ease both;
+}
+h1.htitle .stroke{-webkit-text-stroke:1.5px var(--text);color:transparent}
+h1.htitle .glow{color:var(--gold);text-shadow:0 0 40px rgba(240,165,0,.4)}
+.hero-desc{
+  font-size:clamp(.9rem,1.7vw,1.08rem);color:var(--muted2);line-height:1.75;
+  max-width:460px;margin-bottom:40px;
+  animation:fadeUp .55s .16s ease both;
+}
+.hero-acts{display:flex;gap:14px;flex-wrap:wrap;animation:fadeUp .55s .24s ease both}
+.hero-nums{
+  display:flex;gap:clamp(20px,4vw,56px);
+  margin-top:clamp(40px,6vw,72px);
+  padding-top:36px;border-top:1px solid var(--border2);
+  animation:fadeUp .55s .32s ease both;
+  flex-wrap:wrap;
+}
+.hnum-val{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4.5vw,3.2rem);color:var(--gold);line-height:1}
+.hnum-lab{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:5px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOME – SERVICES PREVIEW */
+.home-services{background:var(--bg2)}
+.srv-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(270px,1fr));
+  gap:2px;
+}
+.srv-card{
+  background:var(--bg3);padding:38px 34px;
+  position:relative;overflow:hidden;
+  transition:transform .35s,background .3s;
+}
+.srv-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s;
+}
+.srv-card:hover{background:#1a2030;transform:translateY(-5px)}
+.srv-card:hover::before{transform:scaleX(1)}
+.srv-card-num{
+  position:absolute;top:26px;right:26px;
+  font-family:'Bebas Neue',sans-serif;font-size:4rem;
+  color:rgba(240,165,0,.06);line-height:1;
+  transition:color .3s;pointer-events:none;
+}
+.srv-card:hover .srv-card-num{color:rgba(240,165,0,.1)}
+.srv-icon{
+  width:50px;height:50px;background:var(--gold-dim);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;margin-bottom:22px;
+  transition:background .3s;
+}
+.srv-card:hover .srv-icon{background:rgba(240,165,0,.22)}
+.srv-icon svg{width:24px;height:24px;stroke:var(--gold);fill:none;stroke-width:1.6}
+.srv-card-title{font-family:'Bebas Neue',sans-serif;font-size:1.55rem;letter-spacing:.04em;margin-bottom:10px}
+.srv-card-desc{color:var(--muted2);font-size:.86rem;line-height:1.68}
+
+/* HOME – WHY */
+.why-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch}
+@media(max-width:820px){.why-wrap{grid-template-columns:1fr}}
+.why-left{padding:clamp(48px,8vw,96px) clamp(16px,5vw,72px);background:var(--bg3)}
+.why-right{
+  background:var(--gold);
+  padding:clamp(48px,8vw,96px) clamp(16px,5vw,72px);
+  display:flex;flex-direction:column;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.why-right::before{
+  content:'20+';
+  position:absolute;right:-10px;top:50%;transform:translateY(-50%);
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(8rem,18vw,15rem);
+  color:rgba(8,11,15,.08);line-height:1;pointer-events:none;letter-spacing:-.02em;
+}
+.why-features{display:flex;flex-direction:column;gap:18px;margin-bottom:0}
+.why-feat{
+  display:flex;gap:16px;align-items:flex-start;
+  padding:18px;border:1px solid transparent;
+  transition:border-color .3s,background .3s;
+}
+.why-feat:hover{border-color:var(--border);background:rgba(240,165,0,.03)}
+.wf-icon{
+  width:42px;height:42px;flex-shrink:0;
+  background:var(--gold-dim);display:flex;align-items:center;justify-content:center;
+}
+.wf-icon svg{width:21px;height:21px;stroke:var(--gold);fill:none;stroke-width:1.6}
+.wf-title{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.04em;margin-bottom:3px}
+.wf-desc{color:var(--muted2);font-size:.82rem;line-height:1.62}
+
+.why-right-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,5vw,4rem);
+  color:#080b0f;line-height:.95;letter-spacing:.02em;
+  margin-bottom:20px;position:relative;z-index:1;
+}
+.why-right-desc{color:rgba(8,11,15,.65);font-size:.95rem;line-height:1.72;margin-bottom:32px;position:relative;z-index:1;max-width:380px}
+.why-nums{display:flex;gap:36px;position:relative;z-index:1;flex-wrap:wrap}
+.wnum{border-left:2px solid rgba(8,11,15,.2);padding-left:16px}
+.wnum-val{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:#080b0f;line-height:1}
+.wnum-lab{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(8,11,15,.55);margin-top:3px}
+
+/* HOME – TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px}
+.testi-card{
+  background:var(--bg3);padding:36px;position:relative;
+  transition:transform .3s,background .3s;
+}
+.testi-card:hover{background:#1a2030;transform:translateY(-4px)}
+.testi-quote{
+  position:absolute;top:20px;right:24px;
+  font-family:'Bebas Neue',sans-serif;font-size:5.5rem;
+  color:rgba(240,165,0,.07);line-height:1;pointer-events:none;
+}
+.stars{color:var(--gold);font-size:.9rem;margin-bottom:16px;letter-spacing:2px}
+.testi-text{color:var(--muted2);font-size:.9rem;line-height:1.77;font-style:italic;margin-bottom:24px}
+.testi-author{display:flex;align-items:center;gap:12px}
+.testi-ava{
+  width:40px;height:40px;background:var(--gold);
+  clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:.95rem;color:#080b0f;flex-shrink:0;
+}
+.testi-name{font-weight:700;font-size:.88rem}
+.testi-role{font-size:.75rem;color:var(--muted)}
+
+/* HOME – CTA STRIP */
+.cta-strip{
+  background:var(--gold);
+  padding:clamp(56px,8vw,96px) clamp(16px,5vw,72px);
+  position:relative;overflow:hidden;
+}
+.cta-strip::after{
+  content:'BERGER';
+  position:absolute;right:-30px;top:50%;transform:translateY(-50%);
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(5rem,18vw,14rem);
+  color:rgba(8,11,15,.06);letter-spacing:.04em;pointer-events:none;white-space:nowrap;
+}
+.cta-inner{display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap;position:relative;z-index:1}
+.cta-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,5.5vw,4rem);color:#080b0f;line-height:.95;letter-spacing:.02em}
+.cta-sub{color:rgba(8,11,15,.6);font-size:.95rem;margin-top:8px}
+
+/* ══════════════════════════════════
+   SERVICES PAGE
+══════════════════════════════════ */
+.page-hero{
+  padding:clamp(52px,8vw,96px) clamp(16px,5vw,72px);
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.page-hero::after{
+  content:attr(data-echo);
+  position:absolute;right:-20px;bottom:-20px;
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(5rem,15vw,11rem);
+  color:rgba(240,165,0,.04);letter-spacing:.04em;line-height:1;pointer-events:none;white-space:nowrap;
+}
+.srv-rows{display:flex;flex-direction:column;gap:2px}
+.srv-row{
+  display:grid;grid-template-columns:220px 1fr;
+  background:var(--bg2);overflow:hidden;
+  transition:background .3s;
+}
+.srv-row:hover{background:var(--bg3)}
+.srv-row-l{
+  padding:40px 32px;border-right:1px solid var(--border2);
+  display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;
+}
+.srv-row-r{padding:40px 40px}
+.srv-row-num{font-family:'Bebas Neue',sans-serif;font-size:3.5rem;color:rgba(240,165,0,.14);line-height:1;margin-bottom:auto}
+.srv-row-icon{
+  width:48px;height:48px;background:var(--gold-dim);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;margin-top:16px;
+}
+.srv-row-icon svg{width:23px;height:23px;stroke:var(--gold);fill:none;stroke-width:1.5}
+.srv-row-name{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:.04em;margin-bottom:12px}
+.srv-row-desc{color:var(--muted2);font-size:.9rem;line-height:1.7;margin-bottom:20px}
+.tags{display:flex;flex-wrap:wrap;gap:8px}
+.tag{
+  padding:4px 12px;border:1px solid var(--border2);
+  font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+}
+@media(max-width:680px){
+  .srv-row{grid-template-columns:1fr}
+  .srv-row-l{border-right:none;border-bottom:1px solid var(--border2);padding:28px 20px;flex-direction:row;align-items:center;gap:16px}
+  .srv-row-num{font-size:2.5rem;margin-bottom:0}
+  .srv-row-r{padding:28px 20px}
+}
+
+/* Process steps */
+.process-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px}
+.proc-card{
+  background:var(--bg3);padding:36px 28px;
+  position:relative;transition:transform .3s,background .3s;
+}
+.proc-card::before{
+  content:'';position:absolute;top:0;left:0;width:2px;height:0;
+  background:var(--gold);transition:height .4s ease;
+}
+.proc-card:hover::before{height:100%}
+.proc-card:hover{background:#181f2d;transform:translateX(4px)}
+.proc-step{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:rgba(240,165,0,.12);line-height:1;margin-bottom:16px}
+.proc-title{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:.04em;margin-bottom:8px}
+.proc-desc{color:var(--muted2);font-size:.84rem;line-height:1.65}
+
+/* ══════════════════════════════════
+   ABOUT PAGE
+══════════════════════════════════ */
+.about-intro{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch}
+@media(max-width:820px){.about-intro{grid-template-columns:1fr}}
+.about-intro-l{padding:clamp(48px,8vw,96px) clamp(16px,5vw,72px);background:var(--bg2)}
+.about-intro-r{
+  background:var(--bg3);padding:clamp(48px,8vw,96px) clamp(16px,5vw,72px);
+  display:flex;flex-direction:column;justify-content:center;
+}
+.big-quote{
+  font-family:'Bebas Neue',sans-serif;font-size:clamp(1.6rem,4vw,2.8rem);
+  letter-spacing:.02em;line-height:1.2;color:var(--text);margin-bottom:24px;
+}
+.big-quote span{color:var(--gold)}
+.about-text{color:var(--muted2);font-size:.92rem;line-height:1.78;margin-bottom:16px}
+
+/* Timeline */
+.timeline-sec{background:var(--bg2)}
+.timeline{display:flex;flex-direction:column;gap:0;position:relative;padding-left:clamp(40px,6vw,72px)}
+.timeline::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:1px;background:var(--border)}
+.tl-item{position:relative;padding:36px 0 36px 32px;border-bottom:1px solid var(--border2)}
+.tl-item:last-child{border-bottom:none}
+.tl-dot{position:absolute;left:-39px;top:42px;width:14px;height:14px;background:var(--gold);border-radius:50%;box-shadow:0 0 0 4px rgba(240,165,0,.15)}
+.tl-year{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:var(--gold);letter-spacing:.12em;margin-bottom:8px}
+.tl-title{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:.04em;margin-bottom:8px}
+.tl-desc{color:var(--muted2);font-size:.88rem;line-height:1.68;max-width:580px}
+
+/* Team */
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:2px}
+.team-card{
+  background:var(--bg3);padding:36px 28px;text-align:center;
+  transition:transform .3s,background .3s;
+}
+.team-card:hover{transform:translateY(-5px);background:#1a2030}
+.team-hex{
+  width:70px;height:70px;margin:0 auto 18px;
+  background:var(--gold);
+  clip-path:polygon(25% 0%,75% 0%,100% 50%,75% 100%,25% 100%,0% 50%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:#080b0f;
+}
+.team-name{font-family:'Bebas Neue',sans-serif;font-size:1.25rem;letter-spacing:.04em;margin-bottom:4px}
+.team-pos{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+.team-bio{color:var(--muted);font-size:.82rem;line-height:1.62;margin-top:12px}
+
+/* Values */
+.vals-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:2px;background:var(--bg2)}
+.val-card{
+  background:var(--bg3);padding:36px 32px;
+  border-left:2px solid transparent;transition:border-color .3s,transform .3s;
+}
+.val-card:hover{border-color:var(--gold);transform:translateX(4px)}
+.val-ico{width:44px;height:44px;background:var(--gold-dim);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
+.val-ico svg{width:22px;height:22px;stroke:var(--gold);fill:none;stroke-width:1.5}
+.val-title{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.04em;margin-bottom:8px}
+.val-desc{color:var(--muted2);font-size:.85rem;line-height:1.65}
+
+/* ══════════════════════════════════
+   CONTACT PAGE
+══════════════════════════════════ */
+.contact-wrap{display:grid;grid-template-columns:1fr 1.5fr;gap:2px}
+@media(max-width:820px){.contact-wrap{grid-template-columns:1fr}}
+.contact-l{background:var(--bg2);padding:clamp(40px,6vw,72px) clamp(16px,5vw,64px)}
+.contact-r{background:var(--bg3);padding:clamp(40px,6vw,72px) clamp(16px,5vw,64px)}
+
+.cinfo-item{display:flex;gap:16px;margin-bottom:30px}
+.cinfo-ico{
+  width:44px;height:44px;flex-shrink:0;
+  background:var(--gold-dim);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+}
+.cinfo-ico svg{width:20px;height:20px;stroke:var(--gold);fill:none;stroke-width:1.5}
+.cinfo-lbl{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.cinfo-val{font-size:.92rem;line-height:1.55}
+.cinfo-val a{color:var(--text);text-decoration:none;transition:color .2s}
+.cinfo-val a:hover{color:var(--gold)}
+
+.form-field{margin-bottom:18px}
+.form-lbl{display:block;font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.form-inp{
+  width:100%;background:var(--bg);border:1px solid var(--border2);
+  color:var(--text);padding:12px 15px;font-size:.9rem;
+  font-family:'Syne',sans-serif;outline:none;transition:border-color .25s;border-radius:0;
+}
+.form-inp:focus{border-color:var(--gold)}
+.form-inp::placeholder{color:var(--muted)}
+textarea.form-inp{resize:vertical;min-height:130px}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:500px){.form-row2{grid-template-columns:1fr}}
+.form-btn{
+  width:100%;background:var(--gold);color:#080b0f;
+  padding:14px;font-weight:700;font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;
+  border:none;cursor:pointer;font-family:'Syne',sans-serif;
+  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
+  transition:background .2s,transform .2s;margin-top:8px;
+}
+.form-btn:hover{background:var(--gold2);transform:translateY(-2px)}
+
+/* Map placeholder */
+.map-box{
+  background:var(--bg2);height:280px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;margin-top:2px;
+  border:1px solid var(--border2);
+}
+.map-grid-bg{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(240,165,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(240,165,0,.05) 1px,transparent 1px);
+  background-size:38px 38px;
+}
+.map-pin-anim{position:relative;z-index:1;text-align:center;animation:mapFloat 2.2s ease-in-out infinite}
+@keyframes mapFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.map-pin-anim svg{width:42px;height:42px;fill:var(--gold)}
+.map-pin-anim p{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.06em;margin-top:6px;color:var(--gold)}
+.map-ping{
+  position:absolute;width:80px;height:80px;
+  border:1px solid var(--gold);border-radius:50%;
+  animation:ping 2.2s ease-out infinite;opacity:0;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.map-ping:nth-child(2){animation-delay:.8s}
+@keyframes ping{0%{transform:translate(-50%,-50%) scale(.2);opacity:.6}100%{transform:translate(-50%,-50%) scale(1.6);opacity:0}}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52px,8vw,84px) clamp(16px,5vw,72px) 28px}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+@media(max-width:900px){.footer-top{grid-template-columns:1fr 1fr}}
+@media(max-width:500px){.footer-top{grid-template-columns:1fr}}
+.footer-brand p{color:var(--muted);font-size:.85rem;line-height:1.75;margin-top:14px;max-width:250px}
+.footer-col-h{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:9px}
+.footer-links a{color:var(--muted);text-decoration:none;font-size:.85rem;transition:color .2s}
+.footer-links a:hover{color:var(--text)}
+.footer-bottom{border-top:1px solid var(--border2);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.footer-bottom p{color:var(--muted);font-size:.78rem}
+.socials{display:flex;gap:10px}
+.soc-btn{width:36px;height:36px;border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:border-color .2s,background .2s}
+.soc-btn:hover{border-color:var(--gold);background:var(--gold-dim)}
+.soc-btn svg{width:15px;height:15px;stroke:var(--muted2);fill:none;stroke-width:1.5;transition:stroke .2s}
+.soc-btn:hover svg{stroke:var(--gold)}
+
+/* ── SCROLL-TO-TOP ── */
+#scrollTop{
+  position:fixed;bottom:26px;right:26px;z-index:800;
+  width:42px;height:42px;background:var(--gold);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);
+  opacity:0;transform:translateY(12px);transition:opacity .3s,transform .3s;
+}
+#scrollTop.show{opacity:1;transform:translateY(0)}
+#scrollTop svg{width:17px;height:17px;stroke:#080b0f;fill:none;stroke-width:2.2}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(50px);
+  background:var(--bg3);border:1px solid var(--border);padding:13px 24px;
+  display:flex;align-items:center;gap:10px;z-index:9999;
+  font-size:.85rem;opacity:0;transition:transform .4s,opacity .4s;pointer-events:none;
+}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast-dot{width:7px;height:7px;background:#4ade80;border-radius:50%;flex-shrink:0}
+</style>
 </head>
 <body>
 
-<header>
-<div class="logo">BERGER</div>
-<nav>
-<a href="#services">Szolgáltatások</a>
-<a href="#fleet">Flotta</a>
-<a href="#network">Hálózat</a>
-<a href="#careers">Karrier</a>
-<a href="#contact">Kapcsolat</a>
+<!-- Cursor -->
+<div id="cur-ring"></div>
+<div id="cur-dot"></div>
+
+<!-- Progress -->
+<div id="prog"></div>
+
+<!-- Scroll Top -->
+<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
+<!-- Toast -->
+<div id="toast"><div id="toast-dot"></div><span id="toast-msg">Üzenet elküldve!</span></div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="nav">
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-hex">
+      <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    </div>
+    <div class="logo-words">
+      <b>Berger Transport</b>
+      <small>KFT · Logisztika</small>
+    </div>
+  </div>
+
+  <ul class="nav-menu" id="navMenu">
+    <li><a href="#" onclick="nav('home')" data-p="home" class="on">Főoldal</a></li>
+    <li><a href="#" onclick="nav('services')" data-p="services">Szolgáltatások</a></li>
+    <li><a href="#" onclick="nav('about')" data-p="about">Rólunk</a></li>
+    <li class="cta-link"><a href="#" onclick="nav('contact')" data-p="contact">Kapcsolat</a></li>
+  </ul>
+
+  <button class="burger" id="burger" onclick="toggleMob()">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
-</header>
 
-<section class="hero">
-<div class="hero-content">
-<h1>Prémium logisztika Európa útjain.</h1>
-<p>Modern flotta, professzionális háttér és vizuálisan is prémium digitális jelenlét.</p>
-<a href="#contact" class="btn">Kapcsolatfelvétel</a>
+<!-- Mobile overlay -->
+<div class="mob-overlay" id="mobOverlay">
+  <a href="#" onclick="nav('home');toggleMob()">Főoldal</a>
+  <a href="#" onclick="nav('services');toggleMob()">Szolgáltatások</a>
+  <a href="#" onclick="nav('about');toggleMob()">Rólunk</a>
+  <a href="#" onclick="nav('contact');toggleMob()">Kapcsolat</a>
 </div>
 
-<div class="floating-card">
-<h3>Live Fleet</h3>
-<p>120+ aktív jármű Európa-szerte valós idejű követéssel.</p>
-</div>
-</section>
+<!-- ═══════════════════════════════
+     HOME PAGE
+═══════════════════════════════ -->
+<div class="page active" id="page-home">
 
-<section>
-<h2 class="section-title">Berger számokban</h2>
-<p class="section-sub">Nemzetközi jelenlét modern logisztikai infrastruktúrával.</p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="speed-lines">
+      <svg viewBox="0 0 600 700" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="500" y1="0" x2="200" y2="700" stroke="#f0a500" stroke-width="80" opacity=".06"/>
+        <line x1="400" y1="0" x2="100" y2="700" stroke="#f0a500" stroke-width="40" opacity=".05"/>
+        <line x1="560" y1="0" x2="260" y2="700" stroke="#f0a500" stroke-width="20" opacity=".04"/>
+        <line x1="320" y1="0" x2="20"  y2="700" stroke="#f0a500" stroke-width="10" opacity=".06"/>
+        <!-- dashed center line -->
+        <line x1="480" y1="0" x2="180" y2="700" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="22 18" opacity=".06"/>
+      </svg>
+    </div>
+    <div class="hero-inner">
+      <div class="hero-chip">Megbízható partner 2005 óta</div>
+      <h1 class="htitle">
+        SZÁLLÍTÁS<br>
+        <span class="stroke">HATÁROK</span><br>
+        <span class="glow">NÉLKÜL.</span>
+      </h1>
+      <p class="hero-desc">Berger Transport KFT – Közúti, kombinált és expressz fuvarozás egész Európában. Minden szállítmányhoz személyes felelősség és precizitás.</p>
+      <div class="hero-acts">
+        <button class="btn btn-gold" onclick="showPage('contact')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          Ajánlatkérés
+        </button>
+        <button class="btn btn-outline" onclick="showPage('services')">Szolgáltatásaink</button>
+      </div>
+      <div class="hero-nums">
+        <div>
+          <div class="hnum-val" data-cnt="18" data-suf="+">0</div>
+          <div class="hnum-lab">Év tapasztalat</div>
+        </div>
+        <div>
+          <div class="hnum-val" data-cnt="320" data-suf="+">0</div>
+          <div class="hnum-lab">Aktív ügyfél</div>
+        </div>
+        <div>
+          <div class="hnum-val" data-cnt="47">0</div>
+          <div class="hnum-lab">Ország</div>
+        </div>
+        <div>
+          <div class="hnum-val" data-cnt="98" data-suf="%">0</div>
+          <div class="hnum-lab">Pontosság</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<div class="stats">
-<div class="stat"><h2>120+</h2><p>Kamion</p></div>
-<div class="stat"><h2>18</h2><p>Ország</p></div>
-<div class="stat"><h2>24/7</h2><p>Diszpécser</p></div>
-<div class="stat"><h2>2007</h2><p>Óta</p></div>
-</div>
-</section>
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-track">
+      <!-- items x2 for seamless loop -->
+      <span class="ticker-item">Közúti fuvarozás<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Raktározás<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Expressz szállítás<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Kombinált fuvar<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Vámkezelés<span class="ticker-dot"></span></span>
+      <span class="ticker-item">ADR fuvarozás<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Logisztikai tanácsadás<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Közúti fuvarozás<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Raktározás<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Expressz szállítás<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Kombinált fuvar<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Vámkezelés<span class="ticker-dot"></span></span>
+      <span class="ticker-item">ADR fuvarozás<span class="ticker-dot"></span></span>
+      <span class="ticker-item">Logisztikai tanácsadás<span class="ticker-dot"></span></span>
+    </div>
+  </div>
 
-<section id="services">
-<h2 class="section-title">Szolgáltatások</h2>
-<div class="grid">
-<div class="card"><h3>FTL Szállítás</h3><p>Nemzetközi teljes rakományos fuvarozás modern flottával.</p></div>
-<div class="card"><h3>Expressz Fuvar</h3><p>Időkritikus logisztikai megoldások Európa-szerte.</p></div>
-<div class="card"><h3>ADR</h3><p>Speciális áruszállítás professzionális háttérrel.</p></div>
-</div>
-</section>
+  <!-- SERVICES PREVIEW -->
+  <section class="home-services">
+    <div class="lbl reveal">Megoldásaink</div>
+    <div class="sec-title reveal d1">Átfogó <span style="color:var(--gold)">logisztikai</span><br>szolgáltatások</div>
+    <p class="sec-sub reveal d2">Legyen szó belföldi vagy nemzetközi szállításról – rugalmas kapacitásunkkal és tapasztalt csapatunkkal minden igényt kielégítünk.</p>
+    <div class="srv-grid">
+      <div class="srv-card reveal">
+        <div class="srv-card-num">01</div>
+        <div class="srv-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <div class="srv-card-title">Közúti fuvarozás</div>
+        <p class="srv-card-desc">Teljes és részrakományos fuvarozás Magyarország és Európa között. Modern flottánk garantálja a megbízhatóságot.</p>
+      </div>
+      <div class="srv-card reveal d1">
+        <div class="srv-card-num">02</div>
+        <div class="srv-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div class="srv-card-title">Expressz szállítás</div>
+        <p class="srv-card-desc">24–72 órás kézbesítés Európa-szerte. Időkritikus küldemények esetén mi vagyunk az ideális partner.</p>
+      </div>
+      <div class="srv-card reveal d2">
+        <div class="srv-card-num">03</div>
+        <div class="srv-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div class="srv-card-title">Raktározás</div>
+        <p class="srv-card-desc">Korszerű raktáraink biztosítják áruja biztonságos tárolását, kezelését és elosztását.</p>
+      </div>
+      <div class="srv-card reveal d3">
+        <div class="srv-card-num">04</div>
+        <div class="srv-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="srv-card-title">Kombinált fuvar</div>
+        <p class="srv-card-desc">Közút–vasút–tenger kombinálásával az optimális útvonalat és árat kínáljuk minden szállítmányhoz.</p>
+      </div>
+    </div>
+    <div style="margin-top:40px;text-align:center" class="reveal">
+      <button class="btn btn-gold" onclick="showPage('services')">Összes szolgáltatás
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </section>
 
-<section id="fleet">
-<h2 class="section-title">Modern Flotta</h2>
-<p class="section-sub">Scania, Volvo és Mercedes nyerges vontatók prémium felszereltséggel.</p>
-<div class="grid">
-<div class="card"><h3>Scania S</h3><p>Prémium hosszútávú kamionok.</p></div>
-<div class="card"><h3>Volvo FH</h3><p>Hatékony európai flottamegoldások.</p></div>
-<div class="card"><h3>Mercedes Actros</h3><p>Modern technológia és kényelem.</p></div>
-</div>
-</section>
+  <!-- WHY US -->
+  <div class="why-wrap">
+    <div class="why-left">
+      <div class="lbl reveal">Miért mi?</div>
+      <div class="sec-title reveal d1">Megbízhatóság<br>minden<br><span style="color:var(--gold)">kilométeren</span></div>
+      <div class="why-features">
+        <div class="why-feat reveal d1">
+          <div class="wf-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div>
+            <div class="wf-title">GPS nyomkövetés</div>
+            <p class="wf-desc">Valós idejű pozíció-frissítéssel mindig tudja, hol tart szállítmánya.</p>
+          </div>
+        </div>
+        <div class="why-feat reveal d2">
+          <div class="wf-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div>
+            <div class="wf-title">24/7 diszpécserszolgálat</div>
+            <p class="wf-desc">Csapatunk éjjel-nappal elérhető bármilyen kérdéssel vagy sürgősséggel kapcsolatban.</p>
+          </div>
+        </div>
+        <div class="why-feat reveal d3">
+          <div class="wf-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div>
+            <div class="wf-title">ISO 9001 tanúsítvánnyal</div>
+            <p class="wf-desc">Minőségirányítási rendszerünk garantálja a következetes, magas szintű kiszolgálást.</p>
+          </div>
+        </div>
+        <div class="why-feat reveal">
+          <div class="wf-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+          <div>
+            <div class="wf-title">Pan-európai lefedettség</div>
+            <p class="wf-desc">47 országban aktív partner-hálózatunk révén sehol sem állunk meg.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="why-right">
+      <div class="why-right-title reveal">18 év<br>iparági<br>tapasztalat</div>
+      <p class="why-right-desc reveal d1">2005-ös alapításunk óta több mint 320 aktív ügyfelünknek nyújtunk kiszámítható, gyors és biztonságos logisztikai megoldásokat.</p>
+      <div class="why-nums reveal d2">
+        <div class="wnum">
+          <div class="wnum-val">320+</div>
+          <div class="wnum-lab">Aktív ügyfél</div>
+        </div>
+        <div class="wnum">
+          <div class="wnum-val">47</div>
+          <div class="wnum-lab">Ország</div>
+        </div>
+        <div class="wnum">
+          <div class="wnum-val">98%</div>
+          <div class="wnum-lab">Pontosság</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<section id="network">
-<h2 class="section-title">Európai hálózat</h2>
-<div class="map">
-<div class="route"></div>
-</div>
-</section>
+  <!-- TESTIMONIALS -->
+  <section style="background:var(--bg)">
+    <div class="lbl reveal">Ügyfeleink mondják</div>
+    <div class="sec-title reveal d1">Vélemények</div>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <div class="testi-quote">"</div>
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"A Berger Transport az egyetlen partner, akivel soha nem volt gondom. Minden szállítmány időre megérkezett, a kommunikáció kiváló."</p>
+        <div class="testi-author">
+          <div class="testi-ava">KP</div>
+          <div>
+            <div class="testi-name">Kovács Péter</div>
+            <div class="testi-role">Logisztikai vezető – AutoParts Kft.</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal d1">
+        <div class="testi-quote">"</div>
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Expressz küldeményeinket mindig megbízhatóan kézbesítik. A GPS-nyomkövetés rengeteg fejfájástól mentett meg."</p>
+        <div class="testi-author">
+          <div class="testi-ava">SN</div>
+          <div>
+            <div class="testi-name">Szabó Nikolett</div>
+            <div class="testi-role">Ügyvezető – MedSupply Zrt.</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card reveal d2">
+        <div class="testi-quote">"</div>
+        <div class="stars">★★★★★</div>
+        <p class="testi-text">"Öt éve dolgozunk együtt és minden alkalommal meglepnek a rugalmasságukkal. Igazi logisztikai partner."</p>
+        <div class="testi-author">
+          <div class="testi-ava">HG</div>
+          <div>
+            <div class="testi-name">Horváth Gábor</div>
+            <div class="testi-role">CEO – EuroTrade Group</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section id="careers">
-<h2 class="section-title">Karrier</h2>
-<div class="grid">
-<div class="card"><h3>Nemzetközi sofőr</h3><p>Modern kamionok és stabil háttér.</p></div>
-<div class="card"><h3>Diszpécser</h3><p>Nemzetközi fuvarszervezés prémium környezetben.</p></div>
-</div>
-</section>
+  <!-- CTA STRIP -->
+  <div class="cta-strip">
+    <div class="cta-inner">
+      <div>
+        <div class="cta-title reveal">Kezdjük el<br>a közös munkát!</div>
+        <p class="cta-sub reveal d1">Ingyenes ajánlatot kérhet 24 órán belül.</p>
+      </div>
+      <button class="btn btn-dark reveal d2" onclick="showPage('contact')">
+        Kapcsolatfelvétel
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
 
-<section id="contact">
-<h2 class="section-title">Kapcsolat</h2>
-<div class="card">
-<h3>Mosonmagyaróvár</h3>
-<p>Berger Transport & Co.</p>
-<p>info@bergertransport.hu</p>
-<p>+36 20 123 4567</p>
-</div>
-</section>
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo" onclick="showPage('home')" style="display:inline-flex">
+          <div class="logo-hex" style="width:34px;height:34px">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          </div>
+          <div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div>
+        </div>
+        <p>Megbízható európai logisztika 2005 óta. Szállítson velünk – bárhova, bármikor.</p>
+      </div>
+      <div>
+        <div class="footer-col-h">Oldalak</div>
+        <ul class="footer-links">
+          <li><a href="#" onclick="nav('home')">Főoldal</a></li>
+          <li><a href="#" onclick="nav('services')">Szolgáltatások</a></li>
+          <li><a href="#" onclick="nav('about')">Rólunk</a></li>
+          <li><a href="#" onclick="nav('contact')">Kapcsolat</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Szolgáltatások</div>
+        <ul class="footer-links">
+          <li><a href="#">Közúti fuvarozás</a></li>
+          <li><a href="#">Expressz szállítás</a></li>
+          <li><a href="#">Raktározás</a></li>
+          <li><a href="#">Kombinált fuvar</a></li>
+          <li><a href="#">ADR fuvarozás</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-h">Elérhetőség</div>
+        <ul class="footer-links">
+          <li><a href="tel:+36301234567">+36 30 123 4567</a></li>
+          <li><a href="mailto:info@bergertransport.hu">info@bergertransport.hu</a></li>
+          <li><a href="#">1234 Budapest,<br>Ipari út 45.</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 Berger Transport KFT. Minden jog fenntartva.</p>
+      <div class="socials">
+        <a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        <a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+      </div>
+    </div>
+  </footer>
+</div><!-- /page-home -->
 
-<footer>
-© 2026 Berger Transport
-</footer>
 
+<!-- ═══════════════════════════════
+     SERVICES PAGE
+═══════════════════════════════ -->
+<div class="page" id="page-services">
+  <div class="page-hero" data-echo="SZOLGÁLTATÁSOK">
+    <div class="lbl">Amit kínálunk</div>
+    <div class="page-title sec-title">Teljes körű<br><span style="color:var(--gold)">logisztikai</span><br>megoldások</div>
+    <p style="color:var(--muted2);max-width:520px;font-size:.95rem;line-height:1.72">Egyedi igényekre szabott szállítási és raktározási szolgáltatások – kis csomagoktól a teljes rakományig.</p>
+  </div>
+
+  <section style="background:var(--bg);padding-top:40px">
+    <div class="srv-rows">
+      <div class="srv-row reveal">
+        <div class="srv-row-l">
+          <div class="srv-row-num">01</div>
+          <div class="srv-row-icon"><svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        </div>
+        <div class="srv-row-r">
+          <div class="srv-row-name">Közúti fuvarozás (FTL / LTL)</div>
+          <p class="srv-row-desc">Teljes vagy részrakományos közúti fuvarozást vállalunk Magyarországon és Európa-szerte. Korszerű vontatóink és hűtős félpótkocsink lehetővé teszik az érzékeny áruk szállítását is. Rendszeres járataink hetente többször indulnak a főbb európai célállomásokra.</p>
+          <div class="tags">
+            <span class="tag">Egész Európa</span>
+            <span class="tag">Hűtős fuvar</span>
+            <span class="tag">Ponyvaponyvás</span>
+            <span class="tag">FTL / LTL</span>
+            <span class="tag">ADR engedély</span>
+          </div>
+        </div>
+      </div>
+      <div class="srv-row reveal d1">
+        <div class="srv-row-l">
+          <div class="srv-row-num">02</div>
+          <div class="srv-row-icon"><svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        </div>
+        <div class="srv-row-r">
+          <div class="srv-row-name">Expressz & Sürgős szállítás</div>
+          <p class="srv-row-desc">Ha az idő kritikus, expressz szolgáltatásunkkal 24–72 órán belül kézbesítünk Európa bármely pontjára. Dedicated furgonos és kamionos megoldások, hétvégén és ünnepnapokon is.</p>
+          <div class="tags">
+            <span class="tag">24h kézbesítés</span>
+            <span class="tag">Dedicated járat</span>
+            <span class="tag">Hétvégi szolgálat</span>
+            <span class="tag">GPS nyomkövetés</span>
+          </div>
+        </div>
+      </div>
+      <div class="srv-row reveal d2">
+        <div class="srv-row-l">
+          <div class="srv-row-num">03</div>
+          <div class="srv-row-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        </div>
+        <div class="srv-row-r">
+          <div class="srv-row-name">Raktározás & Készletkezelés</div>
+          <p class="srv-row-desc">Budapest közelében 8 000 m² fedett raktárfelületünkön biztosítjuk árui biztonságos tárolását. WMS rendszerünk valós idejű készletinformációt nyújt, pick & pack és cross-docking szolgáltatásokkal kiegészítve.</p>
+          <div class="tags">
+            <span class="tag">8 000 m²</span>
+            <span class="tag">WMS rendszer</span>
+            <span class="tag">Pick & Pack</span>
+            <span class="tag">Cross-docking</span>
+            <span class="tag">Hőmérséklet-szabályozott</span>
+          </div>
+        </div>
+      </div>
+      <div class="srv-row reveal d3">
+        <div class="srv-row-l">
+          <div class="srv-row-num">04</div>
+          <div class="srv-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        </div>
+        <div class="srv-row-r">
+          <div class="srv-row-name">Kombinált & Multimodális fuvar</div>
+          <p class="srv-row-desc">A legjobb ár-teljesítmény arány érdekében kombináljuk a közúti, vasúti és tengeri fuvarozást. Konténeres szállítmányok kezelésében is kiterjedt tapasztalattal rendelkezünk.</p>
+          <div class="tags">
+            <span class="tag">Vasúti kapcsolat</span>
+            <span class="tag">Tengeri konténer</span>
+            <span class="tag">Ro-Ro</span>
+            <span class="tag">Vámkezelés</span>
+          </div>
+        </div>
+      </div>
+      <div class="srv-row reveal">
+        <div class="srv-row-l">
+          <div class="srv-row-num">05</div>
+          <div class="srv-row-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+        </div>
+        <div class="srv-row-r">
+          <div class="srv-row-name">Vámkezelés & Dokumentáció</div>
+          <p class="srv-row-desc">Tapasztalt vámügynökeink gondoskodnak az összes szükséges okmány elkészítéséről és benyújtásáról, hogy szállítmánya zökkenőmentesen haladjon át a határokon.</p>
+          <div class="tags">
+            <span class="tag">Import / Export</span>
+            <span class="tag">CMR okmány</span>
+            <span class="tag">T1 / T2 eljárás</span>
+            <span class="tag">AEO státusz</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section style="background:var(--bg2)">
+    <div class="lbl reveal">Hogyan dolgozunk?</div>
+    <div class="sec-title reveal d1">A szállítás<br><span style="color:var(--gold)">folyamata</span></div>
+    <div class="process-grid">
+      <div class="proc-card reveal">
+        <div class="proc-step">01</div>
+        <div class="proc-title">Ajánlatkérés</div>
+        <p class="proc-desc">Töltse ki űrlapunkat vagy hívjon minket. 4 órán belül visszajelzünk személyre szabott ajánlattal.</p>
+      </div>
+      <div class="proc-card reveal d1">
+        <div class="proc-step">02</div>
+        <div class="proc-title">Tervezés</div>
+        <p class="proc-desc">Diszpécsercsapatunk megtervezi az optimális útvonalat és kiválasztja a megfelelő járműtípust.</p>
+      </div>
+      <div class="proc-card reveal d2">
+        <div class="proc-step">03</div>
+        <div class="proc-title">Felvétel</div>
+        <p class="proc-desc">Sofőrünk pontosan a megbeszélt időpontban veszi fel az árut és átveszi a szükséges dokumentumokat.</p>
+      </div>
+      <div class="proc-card reveal d3">
+        <div class="proc-step">04</div>
+        <div class="proc-title">Szállítás</div>
+        <p class="proc-desc">GPS-szel nyomon követheti szállítmányát. Diszpécserünk folyamatosan figyeli a haladást.</p>
+      </div>
+      <div class="proc-card reveal d4">
+        <div class="proc-step">05</div>
+        <div class="proc-title">Kézbesítés</div>
+        <p class="proc-desc">Az áru megérkezésekor digitális aláírással igazoljuk a sikeres kézbesítést és azonnal értesítjük Önt.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-strip">
+    <div class="cta-inner">
+      <div>
+        <div class="cta-title reveal">Kér egy ingyenes<br>ajánlatot?</div>
+        <p class="cta-sub reveal d1">Válaszolunk 4 munkórán belül.</p>
+      </div>
+      <button class="btn btn-dark reveal d2" onclick="showPage('contact')">
+        Ajánlatkérés most
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo" onclick="showPage('home')" style="display:inline-flex">
+          <div class="logo-hex" style="width:34px;height:34px"><svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+          <div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div>
+        </div>
+        <p>Megbízható európai logisztika 2005 óta.</p>
+      </div>
+      <div><div class="footer-col-h">Oldalak</div><ul class="footer-links"><li><a href="#" onclick="nav('home')">Főoldal</a></li><li><a href="#" onclick="nav('services')">Szolgáltatások</a></li><li><a href="#" onclick="nav('about')">Rólunk</a></li><li><a href="#" onclick="nav('contact')">Kapcsolat</a></li></ul></div>
+      <div><div class="footer-col-h">Szolgáltatások</div><ul class="footer-links"><li><a href="#">Közúti fuvarozás</a></li><li><a href="#">Expressz szállítás</a></li><li><a href="#">Raktározás</a></li><li><a href="#">Kombinált fuvar</a></li></ul></div>
+      <div><div class="footer-col-h">Elérhetőség</div><ul class="footer-links"><li><a href="tel:+36301234567">+36 30 123 4567</a></li><li><a href="mailto:info@bergertransport.hu">info@bergertransport.hu</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2024 Berger Transport KFT.</p><div class="socials"><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div></div>
+  </footer>
+</div><!-- /page-services -->
+
+
+<!-- ═══════════════════════════════
+     ABOUT PAGE
+═══════════════════════════════ -->
+<div class="page" id="page-about">
+  <div class="page-hero" data-echo="RÓLUNK">
+    <div class="lbl">A cégről</div>
+    <div class="page-title sec-title">Berger Transport –<br><span style="color:var(--gold)">Ott vagyunk,</span><br>ahol számít.</div>
+    <p style="color:var(--muted2);max-width:520px;font-size:.95rem;line-height:1.72">Közel két évtizedes tapasztalat, elkötelezett csapat és modern infrastruktúra – ez a Berger Transport alapja.</p>
+  </div>
+
+  <!-- Story -->
+  <div class="about-intro">
+    <div class="about-intro-l">
+      <div class="lbl reveal">Történetünk</div>
+      <div class="sec-title reveal d1" style="margin-bottom:24px">Kis cégből<br><span style="color:var(--gold)">európai</span><br>szereplő</div>
+      <p class="about-text reveal d2">A Berger Transport KFT-t 2005-ben alapította Berger János egy egyszerű elképzeléssel: olyan logisztikai vállalatot felépíteni, ahol az ügyfél nem szám, hanem partner.</p>
+      <p class="about-text reveal d2">Két kamionnal és öt alkalmazottal indultunk. Ma 85 fős csapattal, 42 járműből álló flottával és 8 000 m² raktárkapacitással dolgozunk, és büszkék vagyunk rá, hogy ügyfeleink 94%-a hosszú távon velünk marad.</p>
+    </div>
+    <div class="about-intro-r">
+      <div class="big-quote reveal">"A logisztika nem csak szállítás – <span>ez bizalom</span> a kilométereken át."</div>
+      <p class="about-text reveal d1">Minden döntésünk mögött az a meggyőződés áll, hogy az ügyfélnek soha nem kell aggódnia a szállítmánya miatt. Ha feladta az árut, a mi felelősségünk, hogy megérkezzen.</p>
+      <p class="about-text reveal d2">Ez az egyszerű, de erős alapelv vezet minket azóta is.</p>
+      <div style="margin-top:32px" class="reveal d2">
+        <button class="btn btn-gold" onclick="showPage('contact')">Vegyük fel a kapcsolatot
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <section class="timeline-sec">
+    <div class="lbl reveal">Mérföldkövek</div>
+    <div class="sec-title reveal d1" style="margin-bottom:48px">A mi <span style="color:var(--gold)">utunk</span></div>
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2005</div>
+        <div class="tl-title">Alapítás</div>
+        <p class="tl-desc">Berger János megalapítja a Berger Transport KFT-t Budapesten, 2 kamionnal és 5 alkalmazottal. Első ügyfelek: hazai gyártóüzemek.</p>
+      </div>
+      <div class="tl-item reveal d1">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2008</div>
+        <div class="tl-title">Európai terjeszkedés</div>
+        <p class="tl-desc">Megnyílnak az első rendszeres nemzetközi vonalak Németország, Ausztria és Románia irányába. A flotta 12 járműre bővül.</p>
+      </div>
+      <div class="tl-item reveal d2">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2012</div>
+        <div class="tl-title">Raktározás bevezetése</div>
+        <p class="tl-desc">Megnyílik az első 3 000 m²-es raktárunk Budaörsön. ISO 9001 minőségirányítási tanúsítvány megszerzése.</p>
+      </div>
+      <div class="tl-item reveal d3">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2017</div>
+        <div class="tl-title">GPS & Digitalizáció</div>
+        <p class="tl-desc">Bevezetjük a valós idejű GPS-nyomkövetési rendszert és az ügyfélportált. Az összes szállítmány online követhető.</p>
+      </div>
+      <div class="tl-item reveal d4">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2021</div>
+        <div class="tl-title">Raktárbővítés & Zöld flotta</div>
+        <p class="tl-desc">A raktárkapacitás 8 000 m²-re nő. Első 10 Euro VI-os járművünk munkába áll – csökkentjük ökológiai lábnyomunkat.</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-dot"></div>
+        <div class="tl-year">2024</div>
+        <div class="tl-title">Ma</div>
+        <p class="tl-desc">85 munkatárs, 42 jármű, 47 ország, 320+ aktív ügyfél. Folyamatosan fejlesztjük szolgáltatásainkat a jövő kihívásaira.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section style="background:var(--bg)">
+    <div class="lbl reveal">Értékeink</div>
+    <div class="sec-title reveal d1" style="margin-bottom:40px">Ami <span style="color:var(--gold)">megkülönböztet</span></div>
+    <div class="vals-grid">
+      <div class="val-card reveal">
+        <div class="val-ico"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="val-title">Megbízhatóság</div>
+        <p class="val-desc">98%-os szállítási pontosság. Ha vállaltuk, teljesítjük – ez nem marketing szöveg, hanem mért eredmény.</p>
+      </div>
+      <div class="val-card reveal d1">
+        <div class="val-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="val-title">Gyorsaság</div>
+        <p class="val-desc">Ajánlatot 4 órán belül adunk, sürgős fuvarokat 24 órán belül indítunk. Az idő pénz – az Önét és a miénket is.</p>
+      </div>
+      <div class="val-card reveal d2">
+        <div class="val-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="val-title">Partnerség</div>
+        <p class="val-desc">Ügyfeleink 94%-a visszatér. Nem ügyfeleket szerzünk, hanem hosszú távú üzleti partnereket.</p>
+      </div>
+      <div class="val-card reveal d3">
+        <div class="val-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+        <div class="val-title">Átláthatóság</div>
+        <p class="val-desc">Nincs rejtett díj, nincs meglepetés. Amit ajánlunk, az az ár – és a szállítmány mindig nyomon követhető.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section style="background:var(--bg2)">
+    <div class="lbl reveal">Csapatunk</div>
+    <div class="sec-title reveal d1" style="margin-bottom:40px">Az emberek<br><span style="color:var(--gold)">mögötte</span></div>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-hex">BJ</div>
+        <div class="team-name">Berger János</div>
+        <div class="team-pos">Alapító & Ügyvezető</div>
+        <p class="team-bio">20+ év logisztikai tapasztalat. Berger János vízióját egyszerű elvek vezérlik: pontosság, tisztesség és folyamatos fejlődés.</p>
+      </div>
+      <div class="team-card reveal d1">
+        <div class="team-hex">KA</div>
+        <div class="team-name">Kovács Andrea</div>
+        <div class="team-pos">Operatív vezető</div>
+        <p class="team-bio">Andrea 12 éve koordinálja napi szinten a szállítmányokat. Ha gond van, ő megoldja – mielőtt az ügyfél észrevenné.</p>
+      </div>
+      <div class="team-card reveal d2">
+        <div class="team-hex">TM</div>
+        <div class="team-name">Tóth Márton</div>
+        <div class="team-pos">Értékesítési vezető</div>
+        <p class="team-bio">Márton dolga, hogy minden ügyfél a legjobb ajánlatot kapja. 8 éve épít hosszú távú üzleti kapcsolatokat.</p>
+      </div>
+      <div class="team-card reveal d3">
+        <div class="team-hex">NR</div>
+        <div class="team-name">Nagy Réka</div>
+        <div class="team-pos">Ügyfélszolgálat vezető</div>
+        <p class="team-bio">Réka csapata gondoskodik arról, hogy minden kérdésre gyors, pontos választ kapjanak az ügyfelek.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-strip">
+    <div class="cta-inner">
+      <div>
+        <div class="cta-title reveal">Legyen Ön is<br>partnerünk!</div>
+        <p class="cta-sub reveal d1">Ingyenes konzultáció és ajánlat.</p>
+      </div>
+      <button class="btn btn-dark reveal d2" onclick="showPage('contact')">Kapcsolat felvétele
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand"><div class="logo" onclick="showPage('home')" style="display:inline-flex"><div class="logo-hex" style="width:34px;height:34px"><svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div></div><p>Megbízható európai logisztika 2005 óta.</p></div>
+      <div><div class="footer-col-h">Oldalak</div><ul class="footer-links"><li><a href="#" onclick="nav('home')">Főoldal</a></li><li><a href="#" onclick="nav('services')">Szolgáltatások</a></li><li><a href="#" onclick="nav('about')">Rólunk</a></li><li><a href="#" onclick="nav('contact')">Kapcsolat</a></li></ul></div>
+      <div><div class="footer-col-h">Szolgáltatások</div><ul class="footer-links"><li><a href="#">Közúti fuvarozás</a></li><li><a href="#">Expressz szállítás</a></li><li><a href="#">Raktározás</a></li><li><a href="#">Kombinált fuvar</a></li></ul></div>
+      <div><div class="footer-col-h">Elérhetőség</div><ul class="footer-links"><li><a href="tel:+36301234567">+36 30 123 4567</a></li><li><a href="mailto:info@bergertransport.hu">info@bergertransport.hu</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2024 Berger Transport KFT.</p><div class="socials"><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div></div>
+  </footer>
+</div><!-- /page-about -->
+
+
+<!-- ═══════════════════════════════
+     CONTACT PAGE
+═══════════════════════════════ -->
+<div class="page" id="page-contact">
+  <div class="page-hero" data-echo="KAPCSOLAT">
+    <div class="lbl">Írjon nekünk</div>
+    <div class="page-title sec-title">Lépjen velünk<br><span style="color:var(--gold)">kapcsolatba</span></div>
+    <p style="color:var(--muted2);max-width:460px;font-size:.95rem;line-height:1.72">Ajánlatkérés, kérdés vagy együttműködési lehetőség – minden megkeresésre 4 munkórán belül válaszolunk.</p>
+  </div>
+
+  <section style="padding:40px clamp(16px,5vw,72px) 0">
+    <div class="contact-wrap">
+      <!-- Left: info -->
+      <div class="contact-l">
+        <div class="lbl reveal" style="margin-bottom:28px">Elérhetőségeink</div>
+        <div class="cinfo-item reveal">
+          <div class="cinfo-ico"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.87a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2.01z"/></svg></div>
+          <div>
+            <div class="cinfo-lbl">Telefon</div>
+            <div class="cinfo-val"><a href="tel:+36301234567">+36 30 123 4567</a></div>
+          </div>
+        </div>
+        <div class="cinfo-item reveal d1">
+          <div class="cinfo-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <div>
+            <div class="cinfo-lbl">E-mail</div>
+            <div class="cinfo-val"><a href="mailto:info@bergertransport.hu">info@bergertransport.hu</a></div>
+          </div>
+        </div>
+        <div class="cinfo-item reveal d2">
+          <div class="cinfo-ico"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
+          <div>
+            <div class="cinfo-lbl">Cím</div>
+            <div class="cinfo-val">1234 Budapest, Ipari út 45.<br>Magyarország</div>
+          </div>
+        </div>
+        <div class="cinfo-item reveal d3">
+          <div class="cinfo-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div>
+            <div class="cinfo-lbl">Nyitvatartás</div>
+            <div class="cinfo-val">H–P: 07:00–19:00<br>Diszpécser: 24/7</div>
+          </div>
+        </div>
+        <div style="margin-top:40px;padding-top:32px;border-top:1px solid var(--border2)" class="reveal">
+          <div class="lbl" style="margin-bottom:12px">Adószám / Cégjegyzékszám</div>
+          <p style="color:var(--muted2);font-size:.84rem;line-height:1.7">
+            Adószám: 12345678-2-42<br>
+            Cégjegyzékszám: 01-09-123456<br>
+            Bankszámlaszám: OTP Bank 11773456-00234567
+          </p>
+        </div>
+      </div>
+
+      <!-- Right: form -->
+      <div class="contact-r">
+        <div class="lbl reveal" style="margin-bottom:28px">Küldjön üzenetet</div>
+        <div class="form-row2 reveal">
+          <div class="form-field">
+            <label class="form-lbl">Keresztnév *</label>
+            <input class="form-inp" type="text" placeholder="János" id="f-fn">
+          </div>
+          <div class="form-field">
+            <label class="form-lbl">Vezetéknév *</label>
+            <input class="form-inp" type="text" placeholder="Kovács" id="f-ln">
+          </div>
+        </div>
+        <div class="form-field reveal d1">
+          <label class="form-lbl">E-mail cím *</label>
+          <input class="form-inp" type="email" placeholder="pelda@email.hu" id="f-email">
+        </div>
+        <div class="form-field reveal d1">
+          <label class="form-lbl">Telefonszám</label>
+          <input class="form-inp" type="tel" placeholder="+36 30 ..." id="f-tel">
+        </div>
+        <div class="form-field reveal d2">
+          <label class="form-lbl">Téma</label>
+          <select class="form-inp" id="f-topic" style="appearance:none">
+            <option value="">Válasszon...</option>
+            <option>Ajánlatkérés – fuvarozás</option>
+            <option>Ajánlatkérés – raktározás</option>
+            <option>Meglévő szállítmány</option>
+            <option>Együttműködés</option>
+            <option>Egyéb</option>
+          </select>
+        </div>
+        <div class="form-field reveal d2">
+          <label class="form-lbl">Üzenet *</label>
+          <textarea class="form-inp" placeholder="Írja le kérését részletesen..." id="f-msg"></textarea>
+        </div>
+        <button class="form-btn reveal d3" onclick="sendForm()">Üzenet elküldése →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map -->
+  <div style="padding:2px clamp(16px,5vw,72px) 0">
+    <div class="map-box">
+      <div class="map-grid-bg"></div>
+      <div class="map-ping"></div>
+      <div class="map-ping" style="animation-delay:.8s"></div>
+      <div class="map-pin-anim">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        <p>Budapest, Ipari út 45.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ quick -->
+  <section style="background:var(--bg2)">
+    <div class="lbl reveal">Gyakori kérdések</div>
+    <div class="sec-title reveal d1" style="margin-bottom:40px">Mire <span style="color:var(--gold)">kíváncsi?</span></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2px">
+      <div class="val-card reveal">
+        <div class="val-title">Mennyi idő alatt adnak ajánlatot?</div>
+        <p class="val-desc">Munkaidőn belül (H–P 7–19h) 4 órán belül visszajelzünk. Sürgős esetben hívjon minket!</p>
+      </div>
+      <div class="val-card reveal d1">
+        <div class="val-title">Vállalnak háztól házig szállítást?</div>
+        <p class="val-desc">Igen, kizárólag háztól házig fuvarozást végzünk – saját járművünkkel, közvetítő nélkül.</p>
+      </div>
+      <div class="val-card reveal d2">
+        <div class="val-title">Van-e minimális szállítmányméret?</div>
+        <p class="val-desc">Nincs. Egy doboznyi árútól a teljes kamionrakomány egységig mindent szállítunk.</p>
+      </div>
+      <div class="val-card reveal d3">
+        <div class="val-title">Hogyan követhetem a szállítmányomat?</div>
+        <p class="val-desc">A fuvar indítása után e-mailben küldünk nyomkövetési linket – valós idejű GPS pozícióval.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand"><div class="logo" onclick="showPage('home')" style="display:inline-flex"><div class="logo-hex" style="width:34px;height:34px"><svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div></div><p>Megbízható európai logisztika 2005 óta.</p></div>
+      <div><div class="footer-col-h">Oldalak</div><ul class="footer-links"><li><a href="#" onclick="nav('home')">Főoldal</a></li><li><a href="#" onclick="nav('services')">Szolgáltatások</a></li><li><a href="#" onclick="nav('about')">Rólunk</a></li><li><a href="#" onclick="nav('contact')">Kapcsolat</a></li></ul></div>
+      <div><div class="footer-col-h">Szolgáltatások</div><ul class="footer-links"><li><a href="#">Közúti fuvarozás</a></li><li><a href="#">Expressz szállítás</a></li><li><a href="#">Raktározás</a></li><li><a href="#">Kombinált fuvar</a></li></ul></div>
+      <div><div class="footer-col-h">Elérhetőség</div><ul class="footer-links"><li><a href="tel:+36301234567">+36 30 123 4567</a></li><li><a href="mailto:info@bergertransport.hu">info@bergertransport.hu</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2024 Berger Transport KFT. Minden jog fenntartva.</p><div class="socials"><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div></div>
+  </footer>
+</div><!-- /page-contact -->
+
+<script>
+/* ── CURSOR ── */
+const dot = document.getElementById('cur-dot');
+const ring = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+function animRing(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}
+animRing();
+document.querySelectorAll('a,button,[onclick]').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('link-hover'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('link-hover'));
+});
+
+/* ── NAV SCROLL ── */
+const navEl = document.getElementById('nav');
+const progEl = document.getElementById('prog');
+const scrollTopBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll',()=>{
+  navEl.classList.toggle('solid', window.scrollY>30);
+  scrollTopBtn.classList.toggle('show', window.scrollY>300);
+  const h = document.documentElement;
+  const pct = (h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
+  progEl.style.width = pct+'%';
+});
+
+/* ── PAGE SWITCHER ── */
+let curPage = 'home';
+function showPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  curPage = id;
+  window.scrollTo({top:0,behavior:'instant'});
+  updateNav(id);
+  initReveal();
+  if(id==='home') runCounters();
+}
+function nav(id){
+  showPage(id);
+  return false;
+}
+function updateNav(id){
+  document.querySelectorAll('.nav-menu a[data-p]').forEach(a=>{
+    a.classList.toggle('on', a.dataset.p===id);
+  });
+}
+
+/* ── MOBILE MENU ── */
+const burger = document.getElementById('burger');
+const mobOverlay = document.getElementById('mobOverlay');
+function toggleMob(){
+  burger.classList.toggle('x');
+  mobOverlay.classList.toggle('open');
+  document.body.style.overflow = mobOverlay.classList.contains('open')?'hidden':'';
+}
+
+/* ── REVEAL ON SCROLL ── */
+function initReveal(){
+  const els = document.querySelectorAll('#page-'+curPage+' .reveal');
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target)}});
+  },{threshold:.12});
+  els.forEach(el=>{obs.observe(el)});
+}
+
+/* ── COUNTER ANIMATION ── */
+function runCounters(){
+  document.querySelectorAll('[data-cnt]').forEach(el=>{
+    const target = +el.dataset.cnt;
+    const suf = el.dataset.suf||'';
+    let cur=0; const dur=1600;
+    const start=performance.now();
+    function upd(now){
+      const p=Math.min((now-start)/dur,1);
+      const ease=1-Math.pow(1-p,3);
+      cur=Math.round(ease*target);
+      el.textContent=cur+suf;
+      if(p<1)requestAnimationFrame(upd);
+    }
+    requestAnimationFrame(upd);
+  });
+}
+
+/* ── FORM ── */
+function sendForm(){
+  const fn=document.getElementById('f-fn').value.trim();
+  const email=document.getElementById('f-email').value.trim();
+  const msg=document.getElementById('f-msg').value.trim();
+  if(!fn||!email||!msg){
+    showToast('Kérjük töltse ki a kötelező mezőket!','#f0a500');return;
+  }
+  showToast('Üzenet sikeresen elküldve! Hamarosan visszajelzünk.','#4ade80');
+  ['f-fn','f-ln','f-email','f-tel','f-msg'].forEach(id=>{document.getElementById(id).value=''});
+  document.getElementById('f-topic').selectedIndex=0;
+}
+function showToast(msg,color){
+  const t=document.getElementById('toast');
+  const d=document.getElementById('toast-dot');
+  const m=document.getElementById('toast-msg');
+  d.style.background=color;m.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+}
+
+/* ── INIT ── */
+window.addEventListener('load',()=>{
+  initReveal();
+  runCounters();
+});
+</script>
 </body>
 </html>
