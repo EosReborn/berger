@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Berger Transport KFT - Megbízható közúti fuvarozás és logisztikai szolgáltatások Európa-szerte. 18+ év tapasztalat, 320+ ügyfél.">
+<meta name="keywords" content="fuvarozás, logisztika, szállítmányozás, raktározás, közúti fuvar, expressz szállítás">
+<meta property="og:title" content="Berger Transport KFT – Logisztika & Fuvarozás">
+<meta property="og:description" content="Megbízható európai logisztika 2005 óta. Közúti fuvarozás, raktározás, expressz szállítás.">
+<meta property="og:type" content="website">
 <title>Berger Transport KFT – Logisztika & Fuvarozás</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -27,7 +32,7 @@ html{scroll-behavior:smooth}
 body{
   background:var(--bg);color:var(--text);
   font-family:'Syne',sans-serif;
-  overflow-x:hidden;cursor:none;
+  overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
 
@@ -89,60 +94,19 @@ nav.solid{background:rgba(8,11,15,0.95);backdrop-filter:blur(18px);box-shadow:0 
 .burger.x span:nth-child(2){opacity:0}
 .burger.x span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
-/* ===== MOBILE NAV FIX ===== */
-
-@media(max-width:980px){
-
-  .nav-menu{
-    display:none;
-  }
-
-  .burger{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  nav{
-    height:72px;
-    padding:0 18px;
-  }
-
-  .logo{
-    transform:scale(.88);
-    transform-origin:left center;
-    gap:8px;
-  }
-
-  .logo-hex{
-    width:32px;
-    height:32px;
-  }
-
-  .logo-words b{
-    font-size:1rem;
-    line-height:1;
-  }
-
-  .logo-words small{
-    font-size:.48rem;
-    letter-spacing:.16em;
-  }
-
+/* ── MOBILE NAV ── */
+@media(max-width:768px){
+  .nav-menu{display:none}
+  .burger{display:flex}
+  nav{height:60px;padding:0 18px}
+  :root{--nav:60px}
+  .logo{transform:scale(.85);transform-origin:left center;gap:8px}
+  .logo-hex{width:32px;height:32px}
+  .logo-hex svg{width:18px;height:18px}
+  .logo-words b{font-size:1.1rem}
+  .logo-words small{font-size:.5rem;letter-spacing:.16em}
 }
 
-@media (hover:none){
-
-  #cur-dot,
-  #cur-ring{
-    display:none;
-  }
-
-  body{
-    cursor:auto;
-  }
-
-}
 /* ── MOBILE OVERLAY ── */
 .mob-overlay{
   display:none;position:fixed;inset:0;z-index:850;
@@ -162,8 +126,14 @@ nav.solid{background:rgba(8,11,15,0.95);backdrop-filter:blur(18px);box-shadow:0 
 .mob-overlay a:nth-child(2){animation-delay:.1s}
 .mob-overlay a:nth-child(3){animation-delay:.15s}
 .mob-overlay a:nth-child(4){animation-delay:.2s}
-.mob-overlay a:hover{color:var(--gold)}
+.mob-overlay a:hover,.mob-overlay a:active{color:var(--gold)}
 @keyframes mobIn{to{opacity:1;transform:translateY(0)}}
+
+/* Hide cursor on touch devices */
+@media (hover:none){
+  #cur-dot,#cur-ring{display:none}
+  body{cursor:auto}
+}
 
 /* ── PAGES ── */
 .page{display:none;min-height:100vh;padding-top:var(--nav);animation:fadeSlide .45s ease}
@@ -238,7 +208,6 @@ section{padding:clamp(64px,10vw,128px) clamp(16px,5vw,72px)}
   background-size:56px 56px;
   mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,black,transparent);
 }
-/* Diagonal speed-lines */
 .speed-lines{position:absolute;right:0;top:0;width:55%;height:100%;overflow:hidden;pointer-events:none}
 .speed-lines svg{width:100%;height:100%}
 
@@ -551,6 +520,7 @@ h1.htitle .glow{color:var(--gold);text-shadow:0 0 40px rgba(240,165,0,.4)}
 }
 .form-inp:focus{border-color:var(--gold)}
 .form-inp::placeholder{color:var(--muted)}
+.form-inp.error{border-color:#ef4444}
 textarea.form-inp{resize:vertical;min-height:130px}
 .form-row2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:500px){.form-row2{grid-template-columns:1fr}}
@@ -562,6 +532,7 @@ textarea.form-inp{resize:vertical;min-height:130px}
   transition:background .2s,transform .2s;margin-top:8px;
 }
 .form-btn:hover{background:var(--gold2);transform:translateY(-2px)}
+.form-btn:disabled{opacity:.5;cursor:not-allowed}
 
 /* Map placeholder */
 .map-box{
@@ -613,8 +584,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
   display:flex;align-items:center;justify-content:center;
   clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);
   opacity:0;transform:translateY(12px);transition:opacity .3s,transform .3s;
+  pointer-events:none;
 }
-#scrollTop.show{opacity:1;transform:translateY(0)}
+#scrollTop.show{opacity:1;transform:translateY(0);pointer-events:auto}
 #scrollTop svg{width:17px;height:17px;stroke:#080b0f;fill:none;stroke-width:2.2}
 
 /* ── TOAST ── */
@@ -626,6 +598,12 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
 }
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 #toast-dot{width:7px;height:7px;background:#4ade80;border-radius:50%;flex-shrink:0}
+
+@media(max-width:768px){
+  .srv-grid{grid-template-columns:1fr}
+  .hero-nums{gap:20px}
+  .hero-nums>div{min-width:120px}
+}
 </style>
 </head>
 <body>
@@ -638,7 +616,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
 <div id="prog"></div>
 
 <!-- Scroll Top -->
-<button id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+<button id="scrollTop" aria-label="Vissza a tetejére">
   <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
 </button>
 
@@ -647,7 +625,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
 
 <!-- ═══ NAV ═══ -->
 <nav id="nav">
-  <div class="logo" onclick="showPage('home')">
+  <a href="#" class="logo" onclick="showPage('home');return false" aria-label="Berger Transport Főoldal">
     <div class="logo-hex">
       <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
     </div>
@@ -655,26 +633,26 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
       <b>Berger Transport</b>
       <small>KFT · Logisztika</small>
     </div>
-  </div>
+  </a>
 
   <ul class="nav-menu" id="navMenu">
-    <li><a href="#" onclick="nav('home')" data-p="home" class="on">Főoldal</a></li>
-    <li><a href="#" onclick="nav('services')" data-p="services">Szolgáltatások</a></li>
-    <li><a href="#" onclick="nav('about')" data-p="about">Rólunk</a></li>
-    <li class="cta-link"><a href="#" onclick="nav('contact')" data-p="contact">Kapcsolat</a></li>
+    <li><a href="#" onclick="nav('home');return false" data-p="home" class="on">Főoldal</a></li>
+    <li><a href="#" onclick="nav('services');return false" data-p="services">Szolgáltatások</a></li>
+    <li><a href="#" onclick="nav('about');return false" data-p="about">Rólunk</a></li>
+    <li class="cta-link"><a href="#" onclick="nav('contact');return false" data-p="contact">Kapcsolat</a></li>
   </ul>
 
-  <button class="burger" id="burger" onclick="toggleMob()">
+  <button class="burger" id="burger" onclick="toggleMob()" aria-label="Menü megnyitása">
     <span></span><span></span><span></span>
   </button>
 </nav>
 
 <!-- Mobile overlay -->
 <div class="mob-overlay" id="mobOverlay">
-  <a href="#" onclick="nav('home');toggleMob()">Főoldal</a>
-  <a href="#" onclick="nav('services');toggleMob()">Szolgáltatások</a>
-  <a href="#" onclick="nav('about');toggleMob()">Rólunk</a>
-  <a href="#" onclick="nav('contact');toggleMob()">Kapcsolat</a>
+  <a href="#" onclick="nav('home');toggleMob();return false">Főoldal</a>
+  <a href="#" onclick="nav('services');toggleMob();return false">Szolgáltatások</a>
+  <a href="#" onclick="nav('about');toggleMob();return false">Rólunk</a>
+  <a href="#" onclick="nav('contact');toggleMob();return false">Kapcsolat</a>
 </div>
 
 <!-- ═══════════════════════════════
@@ -692,7 +670,6 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
         <line x1="400" y1="0" x2="100" y2="700" stroke="#f0a500" stroke-width="40" opacity=".05"/>
         <line x1="560" y1="0" x2="260" y2="700" stroke="#f0a500" stroke-width="20" opacity=".04"/>
         <line x1="320" y1="0" x2="20"  y2="700" stroke="#f0a500" stroke-width="10" opacity=".06"/>
-        <!-- dashed center line -->
         <line x1="480" y1="0" x2="180" y2="700" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="22 18" opacity=".06"/>
       </svg>
     </div>
@@ -735,7 +712,6 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
   <!-- TICKER -->
   <div class="ticker">
     <div class="ticker-track">
-      <!-- items x2 for seamless loop -->
       <span class="ticker-item">Közúti fuvarozás<span class="ticker-dot"></span></span>
       <span class="ticker-item">Raktározás<span class="ticker-dot"></span></span>
       <span class="ticker-item">Expressz szállítás<span class="ticker-dot"></span></span>
@@ -909,31 +885,31 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
   <footer>
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="logo" onclick="showPage('home')" style="display:inline-flex">
+        <a href="#" class="logo" onclick="showPage('home');return false" style="display:inline-flex">
           <div class="logo-hex" style="width:34px;height:34px">
             <svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
           </div>
           <div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div>
-        </div>
+        </a>
         <p>Megbízható európai logisztika 2005 óta. Szállítson velünk – bárhova, bármikor.</p>
       </div>
       <div>
         <div class="footer-col-h">Oldalak</div>
         <ul class="footer-links">
-          <li><a href="#" onclick="nav('home')">Főoldal</a></li>
-          <li><a href="#" onclick="nav('services')">Szolgáltatások</a></li>
-          <li><a href="#" onclick="nav('about')">Rólunk</a></li>
-          <li><a href="#" onclick="nav('contact')">Kapcsolat</a></li>
+          <li><a href="#" onclick="nav('home');return false">Főoldal</a></li>
+          <li><a href="#" onclick="nav('services');return false">Szolgáltatások</a></li>
+          <li><a href="#" onclick="nav('about');return false">Rólunk</a></li>
+          <li><a href="#" onclick="nav('contact');return false">Kapcsolat</a></li>
         </ul>
       </div>
       <div>
         <div class="footer-col-h">Szolgáltatások</div>
         <ul class="footer-links">
-          <li><a href="#">Közúti fuvarozás</a></li>
-          <li><a href="#">Expressz szállítás</a></li>
-          <li><a href="#">Raktározás</a></li>
-          <li><a href="#">Kombinált fuvar</a></li>
-          <li><a href="#">ADR fuvarozás</a></li>
+          <li><a href="#" onclick="showPage('services');return false">Közúti fuvarozás</a></li>
+          <li><a href="#" onclick="showPage('services');return false">Expressz szállítás</a></li>
+          <li><a href="#" onclick="showPage('services');return false">Raktározás</a></li>
+          <li><a href="#" onclick="showPage('services');return false">Kombinált fuvar</a></li>
+          <li><a href="#" onclick="showPage('services');return false">ADR fuvarozás</a></li>
         </ul>
       </div>
       <div>
@@ -941,16 +917,16 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
         <ul class="footer-links">
           <li><a href="tel:+36301234567">+36 30 123 4567</a></li>
           <li><a href="mailto:info@bergertransport.hu">info@bergertransport.hu</a></li>
-          <li><a href="#">1234 Budapest,<br>Ipari út 45.</a></li>
+          <li>1234 Budapest,<br>Ipari út 45.</li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <p>© 2024 Berger Transport KFT. Minden jog fenntartva.</p>
       <div class="socials">
-        <a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
-        <a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
-        <a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+        <a class="soc-btn" href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+        <a class="soc-btn" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+        <a class="soc-btn" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
       </div>
     </div>
   </footer>
@@ -1104,17 +1080,17 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
   <footer>
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="logo" onclick="showPage('home')" style="display:inline-flex">
+        <a href="#" class="logo" onclick="showPage('home');return false" style="display:inline-flex">
           <div class="logo-hex" style="width:34px;height:34px"><svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
           <div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div>
-        </div>
+        </a>
         <p>Megbízható európai logisztika 2005 óta.</p>
       </div>
-      <div><div class="footer-col-h">Oldalak</div><ul class="footer-links"><li><a href="#" onclick="nav('home')">Főoldal</a></li><li><a href="#" onclick="nav('services')">Szolgáltatások</a></li><li><a href="#" onclick="nav('about')">Rólunk</a></li><li><a href="#" onclick="nav('contact')">Kapcsolat</a></li></ul></div>
-      <div><div class="footer-col-h">Szolgáltatások</div><ul class="footer-links"><li><a href="#">Közúti fuvarozás</a></li><li><a href="#">Expressz szállítás</a></li><li><a href="#">Raktározás</a></li><li><a href="#">Kombinált fuvar</a></li></ul></div>
+      <div><div class="footer-col-h">Oldalak</div><ul class="footer-links"><li><a href="#" onclick="nav('home');return false">Főoldal</a></li><li><a href="#" onclick="nav('services');return false">Szolgáltatások</a></li><li><a href="#" onclick="nav('about');return false">Rólunk</a></li><li><a href="#" onclick="nav('contact');return false">Kapcsolat</a></li></ul></div>
+      <div><div class="footer-col-h">Szolgáltatások</div><ul class="footer-links"><li><a href="#" onclick="showPage('services');return false">Közúti fuvarozás</a></li><li><a href="#" onclick="showPage('services');return false">Expressz szállítás</a></li><li><a href="#" onclick="showPage('services');return false">Raktározás</a></li><li><a href="#" onclick="showPage('services');return false">Kombinált fuvar</a></li></ul></div>
       <div><div class="footer-col-h">Elérhetőség</div><ul class="footer-links"><li><a href="tel:+36301234567">+36 30 123 4567</a></li><li><a href="mailto:info@bergertransport.hu">info@bergertransport.hu</a></li></ul></div>
     </div>
-    <div class="footer-bottom"><p>© 2024 Berger Transport KFT.</p><div class="socials"><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div></div>
+    <div class="footer-bottom"><p>© 2024 Berger Transport KFT.</p><div class="socials"><a class="soc-btn" href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a class="soc-btn" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div></div>
   </footer>
 </div><!-- /page-services -->
 
@@ -1259,7 +1235,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
         <div class="cta-title reveal">Legyen Ön is<br>partnerünk!</div>
         <p class="cta-sub reveal d1">Ingyenes konzultáció és ajánlat.</p>
       </div>
-      <button class="btn btn-dark reveal d2" onclick="showPage('contact')">Kapcsolat felvétele
+      <button class="btn btn-dark reveal d2" onclick="showPage('contact')">
+        Kapcsolat felvétele
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </button>
     </div>
@@ -1267,12 +1244,12 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
 
   <footer>
     <div class="footer-top">
-      <div class="footer-brand"><div class="logo" onclick="showPage('home')" style="display:inline-flex"><div class="logo-hex" style="width:34px;height:34px"><svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div></div><p>Megbízható európai logisztika 2005 óta.</p></div>
-      <div><div class="footer-col-h">Oldalak</div><ul class="footer-links"><li><a href="#" onclick="nav('home')">Főoldal</a></li><li><a href="#" onclick="nav('services')">Szolgáltatások</a></li><li><a href="#" onclick="nav('about')">Rólunk</a></li><li><a href="#" onclick="nav('contact')">Kapcsolat</a></li></ul></div>
-      <div><div class="footer-col-h">Szolgáltatások</div><ul class="footer-links"><li><a href="#">Közúti fuvarozás</a></li><li><a href="#">Expressz szállítás</a></li><li><a href="#">Raktározás</a></li><li><a href="#">Kombinált fuvar</a></li></ul></div>
+      <div class="footer-brand"><a href="#" class="logo" onclick="showPage('home');return false" style="display:inline-flex"><div class="logo-hex" style="width:34px;height:34px"><svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div></a><p>Megbízható európai logisztika 2005 óta.</p></div>
+      <div><div class="footer-col-h">Oldalak</div><ul class="footer-links"><li><a href="#" onclick="nav('home');return false">Főoldal</a></li><li><a href="#" onclick="nav('services');return false">Szolgáltatások</a></li><li><a href="#" onclick="nav('about');return false">Rólunk</a></li><li><a href="#" onclick="nav('contact');return false">Kapcsolat</a></li></ul></div>
+      <div><div class="footer-col-h">Szolgáltatások</div><ul class="footer-links"><li><a href="#" onclick="showPage('services');return false">Közúti fuvarozás</a></li><li><a href="#" onclick="showPage('services');return false">Expressz szállítás</a></li><li><a href="#" onclick="showPage('services');return false">Raktározás</a></li><li><a href="#" onclick="showPage('services');return false">Kombinált fuvar</a></li></ul></div>
       <div><div class="footer-col-h">Elérhetőség</div><ul class="footer-links"><li><a href="tel:+36301234567">+36 30 123 4567</a></li><li><a href="mailto:info@bergertransport.hu">info@bergertransport.hu</a></li></ul></div>
     </div>
-    <div class="footer-bottom"><p>© 2024 Berger Transport KFT.</p><div class="socials"><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div></div>
+    <div class="footer-bottom"><p>© 2024 Berger Transport KFT.</p><div class="socials"><a class="soc-btn" href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a class="soc-btn" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div></div>
   </footer>
 </div><!-- /page-about -->
 
@@ -1333,40 +1310,42 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
       <!-- Right: form -->
       <div class="contact-r">
         <div class="lbl reveal" style="margin-bottom:28px">Küldjön üzenetet</div>
-        <div class="form-row2 reveal">
-          <div class="form-field">
-            <label class="form-lbl">Keresztnév *</label>
-            <input class="form-inp" type="text" placeholder="János" id="f-fn">
+        <form id="contactForm" onsubmit="sendForm(event)">
+          <div class="form-row2 reveal">
+            <div class="form-field">
+              <label class="form-lbl" for="f-fn">Keresztnév *</label>
+              <input class="form-inp" type="text" placeholder="János" id="f-fn" required>
+            </div>
+            <div class="form-field">
+              <label class="form-lbl" for="f-ln">Vezetéknév *</label>
+              <input class="form-inp" type="text" placeholder="Kovács" id="f-ln" required>
+            </div>
           </div>
-          <div class="form-field">
-            <label class="form-lbl">Vezetéknév *</label>
-            <input class="form-inp" type="text" placeholder="Kovács" id="f-ln">
+          <div class="form-field reveal d1">
+            <label class="form-lbl" for="f-email">E-mail cím *</label>
+            <input class="form-inp" type="email" placeholder="pelda@email.hu" id="f-email" required>
           </div>
-        </div>
-        <div class="form-field reveal d1">
-          <label class="form-lbl">E-mail cím *</label>
-          <input class="form-inp" type="email" placeholder="pelda@email.hu" id="f-email">
-        </div>
-        <div class="form-field reveal d1">
-          <label class="form-lbl">Telefonszám</label>
-          <input class="form-inp" type="tel" placeholder="+36 30 ..." id="f-tel">
-        </div>
-        <div class="form-field reveal d2">
-          <label class="form-lbl">Téma</label>
-          <select class="form-inp" id="f-topic" style="appearance:none">
-            <option value="">Válasszon...</option>
-            <option>Ajánlatkérés – fuvarozás</option>
-            <option>Ajánlatkérés – raktározás</option>
-            <option>Meglévő szállítmány</option>
-            <option>Együttműködés</option>
-            <option>Egyéb</option>
-          </select>
-        </div>
-        <div class="form-field reveal d2">
-          <label class="form-lbl">Üzenet *</label>
-          <textarea class="form-inp" placeholder="Írja le kérését részletesen..." id="f-msg"></textarea>
-        </div>
-        <button class="form-btn reveal d3" onclick="sendForm()">Üzenet elküldése →</button>
+          <div class="form-field reveal d1">
+            <label class="form-lbl" for="f-tel">Telefonszám</label>
+            <input class="form-inp" type="tel" placeholder="+36 30 ..." id="f-tel">
+          </div>
+          <div class="form-field reveal d2">
+            <label class="form-lbl" for="f-topic">Téma</label>
+            <select class="form-inp" id="f-topic">
+              <option value="">Válasszon...</option>
+              <option>Ajánlatkérés – fuvarozás</option>
+              <option>Ajánlatkérés – raktározás</option>
+              <option>Meglévő szállítmány</option>
+              <option>Együttműködés</option>
+              <option>Egyéb</option>
+            </select>
+          </div>
+          <div class="form-field reveal d2">
+            <label class="form-lbl" for="f-msg">Üzenet *</label>
+            <textarea class="form-inp" placeholder="Írja le kérését részletesen..." id="f-msg" required></textarea>
+          </div>
+          <button type="submit" class="form-btn reveal d3">Üzenet elküldése →</button>
+        </form>
       </div>
     </div>
   </section>
@@ -1410,12 +1389,12 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
 
   <footer>
     <div class="footer-top">
-      <div class="footer-brand"><div class="logo" onclick="showPage('home')" style="display:inline-flex"><div class="logo-hex" style="width:34px;height:34px"><svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div></div><p>Megbízható európai logisztika 2005 óta.</p></div>
-      <div><div class="footer-col-h">Oldalak</div><ul class="footer-links"><li><a href="#" onclick="nav('home')">Főoldal</a></li><li><a href="#" onclick="nav('services')">Szolgáltatások</a></li><li><a href="#" onclick="nav('about')">Rólunk</a></li><li><a href="#" onclick="nav('contact')">Kapcsolat</a></li></ul></div>
-      <div><div class="footer-col-h">Szolgáltatások</div><ul class="footer-links"><li><a href="#">Közúti fuvarozás</a></li><li><a href="#">Expressz szállítás</a></li><li><a href="#">Raktározás</a></li><li><a href="#">Kombinált fuvar</a></li></ul></div>
+      <div class="footer-brand"><a href="#" class="logo" onclick="showPage('home');return false" style="display:inline-flex"><div class="logo-hex" style="width:34px;height:34px"><svg viewBox="0 0 24 24" style="width:18px;height:18px" fill="#080b0f"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="logo-words"><b>Berger Transport</b><small>KFT · Logisztika</small></div></a><p>Megbízható európai logisztika 2005 óta.</p></div>
+      <div><div class="footer-col-h">Oldalak</div><ul class="footer-links"><li><a href="#" onclick="nav('home');return false">Főoldal</a></li><li><a href="#" onclick="nav('services');return false">Szolgáltatások</a></li><li><a href="#" onclick="nav('about');return false">Rólunk</a></li><li><a href="#" onclick="nav('contact');return false">Kapcsolat</a></li></ul></div>
+      <div><div class="footer-col-h">Szolgáltatások</div><ul class="footer-links"><li><a href="#" onclick="showPage('services');return false">Közúti fuvarozás</a></li><li><a href="#" onclick="showPage('services');return false">Expressz szállítás</a></li><li><a href="#" onclick="showPage('services');return false">Raktározás</a></li><li><a href="#" onclick="showPage('services');return false">Kombinált fuvar</a></li></ul></div>
       <div><div class="footer-col-h">Elérhetőség</div><ul class="footer-links"><li><a href="tel:+36301234567">+36 30 123 4567</a></li><li><a href="mailto:info@bergertransport.hu">info@bergertransport.hu</a></li></ul></div>
     </div>
-    <div class="footer-bottom"><p>© 2024 Berger Transport KFT. Minden jog fenntartva.</p><div class="socials"><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a class="soc-btn" href="#"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div></div>
+    <div class="footer-bottom"><p>© 2024 Berger Transport KFT. Minden jog fenntartva.</p><div class="socials"><a class="soc-btn" href="#" aria-label="Facebook"><svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a><a class="soc-btn" href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a></div></div>
   </footer>
 </div><!-- /page-contact -->
 
@@ -1424,9 +1403,22 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:clamp(52
 const dot = document.getElementById('cur-dot');
 const ring = document.getElementById('cur-ring');
 let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
-function animRing(){rx+=(mx-rx)*.14;ry+=(my-ry)*.14;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;
+  my=e.clientY;
+  dot.style.left=mx+'px';
+  dot.style.top=my+'px';
+});
+
+function animRing(){
+  rx+=(mx-rx)*.14;
+  ry+=(my-ry)*.14;
+  ring.style.left=rx+'px';
+  ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
 animRing();
+
 document.querySelectorAll('a,button,[onclick]').forEach(el=>{
   el.addEventListener('mouseenter',()=>document.body.classList.add('link-hover'));
   el.addEventListener('mouseleave',()=>document.body.classList.remove('link-hover'));
@@ -1436,9 +1428,11 @@ document.querySelectorAll('a,button,[onclick]').forEach(el=>{
 const navEl = document.getElementById('nav');
 const progEl = document.getElementById('prog');
 const scrollTopBtn = document.getElementById('scrollTop');
+
 window.addEventListener('scroll',()=>{
   navEl.classList.toggle('solid', window.scrollY>30);
-  scrollTopBtn.classList.toggle('show', window.scrollY>300);
+  scrollTopBtn.classList.toggle('show', window.scrollY>500);
+  
   const h = document.documentElement;
   const pct = (h.scrollTop/(h.scrollHeight-h.clientHeight))*100;
   progEl.style.width = pct+'%';
@@ -1446,19 +1440,30 @@ window.addEventListener('scroll',()=>{
 
 /* ── PAGE SWITCHER ── */
 let curPage = 'home';
+let counterRan = false;
+
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   curPage = id;
   window.scrollTo({top:0,behavior:'instant'});
   updateNav(id);
-  initReveal();
-  if(id==='home') runCounters();
+  
+  // Reset and re-init reveals
+  setTimeout(()=>{
+    initReveal();
+    if(id==='home' && !counterRan) {
+      runCounters();
+      counterRan = true;
+    }
+  }, 50);
 }
+
 function nav(id){
   showPage(id);
   return false;
 }
+
 function updateNav(id){
   document.querySelectorAll('.nav-menu a[data-p]').forEach(a=>{
     a.classList.toggle('on', a.dataset.p===id);
@@ -1468,6 +1473,7 @@ function updateNav(id){
 /* ── MOBILE MENU ── */
 const burger = document.getElementById('burger');
 const mobOverlay = document.getElementById('mobOverlay');
+
 function toggleMob(){
   burger.classList.toggle('x');
   mobOverlay.classList.toggle('open');
@@ -1476,11 +1482,21 @@ function toggleMob(){
 
 /* ── REVEAL ON SCROLL ── */
 function initReveal(){
+  // Remove all previous 'in' classes to allow re-animation
+  const allReveal = document.querySelectorAll('.reveal');
+  allReveal.forEach(el=>el.classList.remove('in'));
+  
   const els = document.querySelectorAll('#page-'+curPage+' .reveal');
   const obs = new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target)}});
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        obs.unobserve(e.target);
+      }
+    });
   },{threshold:.12});
-  els.forEach(el=>{obs.observe(el)});
+  
+  els.forEach(el=>obs.observe(el));
 }
 
 /* ── COUNTER ANIMATION ── */
@@ -1488,8 +1504,10 @@ function runCounters(){
   document.querySelectorAll('[data-cnt]').forEach(el=>{
     const target = +el.dataset.cnt;
     const suf = el.dataset.suf||'';
-    let cur=0; const dur=1600;
+    let cur=0;
+    const dur=1600;
     const start=performance.now();
+    
     function upd(now){
       const p=Math.min((now-start)/dur,1);
       const ease=1-Math.pow(1-p,3);
@@ -1501,31 +1519,72 @@ function runCounters(){
   });
 }
 
-/* ── FORM ── */
-function sendForm(){
-  const fn=document.getElementById('f-fn').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  const msg=document.getElementById('f-msg').value.trim();
-  if(!fn||!email||!msg){
-    showToast('Kérjük töltse ki a kötelező mezőket!','#f0a500');return;
+/* ── FORM VALIDATION & SUBMIT ── */
+function sendForm(e){
+  e.preventDefault();
+  
+  const fn = document.getElementById('f-fn').value.trim();
+  const ln = document.getElementById('f-ln').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const msg = document.getElementById('f-msg').value.trim();
+  
+  // Clear previous errors
+  document.querySelectorAll('.form-inp').forEach(inp=>inp.classList.remove('error'));
+  
+  // Validate
+  let hasError = false;
+  
+  if(!fn){
+    document.getElementById('f-fn').classList.add('error');
+    hasError = true;
   }
+  
+  if(!ln){
+    document.getElementById('f-ln').classList.add('error');
+    hasError = true;
+  }
+  
+  if(!email || !isValidEmail(email)){
+    document.getElementById('f-email').classList.add('error');
+    hasError = true;
+  }
+  
+  if(!msg){
+    document.getElementById('f-msg').classList.add('error');
+    hasError = true;
+  }
+  
+  if(hasError){
+    showToast('Kérjük, töltse ki helyesen a kötelező mezőket!','#ef4444');
+    return false;
+  }
+  
+  // Success
   showToast('Üzenet sikeresen elküldve! Hamarosan visszajelzünk.','#4ade80');
-  ['f-fn','f-ln','f-email','f-tel','f-msg'].forEach(id=>{document.getElementById(id).value=''});
-  document.getElementById('f-topic').selectedIndex=0;
+  document.getElementById('contactForm').reset();
+  return false;
 }
+
+function isValidEmail(email){
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
 function showToast(msg,color){
   const t=document.getElementById('toast');
   const d=document.getElementById('toast-dot');
   const m=document.getElementById('toast-msg');
-  d.style.background=color;m.textContent=msg;
+  d.style.background=color;
+  m.textContent=msg;
   t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),4000);
+  setTimeout(()=>t.classList.remove('show'),4500);
 }
 
 /* ── INIT ── */
 window.addEventListener('load',()=>{
   initReveal();
   runCounters();
+  counterRan = true;
 });
 </script>
 </body>
