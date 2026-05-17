@@ -3,6 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="googlebot" content="index, follow">
+<meta name="language" content="Hungarian">
+<meta name="author" content="Berger Transport & CO">
+<meta name="copyright" content="© 2024 Berger Transport & CO">
+<meta name="rating" content="general">
+<meta name="revisit-after" content="7 days">
 <meta name="description" content="Berger Transport & CO - Megbízható közúti fuvarozás és logisztikai szolgáltatások Európa-szerte. Modern LNG flotta.">
 <meta name="keywords" content="fuvarozás, logisztika, szállítmányozás, raktározás, közúti fuvar, expressz szállítás, Berger Transport, LNG kamion">
 
@@ -44,6 +52,163 @@
 <link rel="canonical" content="https://berger-transport.hu/">
 <title>Berger Transport & CO – Logisztika & Fuvarozás</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700&display=swap" rel="stylesheet">
+
+<!-- JSON-LD Strukturált adatok (Schema.org) a SEO-hoz -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TransportationCompany",
+  "name": "Berger Transport & CO",
+  "description": "Megbízható közúti fuvarozás és logisztikai szolgáltatások Európa-szerte modern LNG flottával",
+  "url": "https://berger-transport.hu",
+  "logo": "https://berger-transport.hu/logo.jpg",
+  "image": "https://berger-transport.hu/ke_p1.jpg",
+  "telephone": "+36-30-123-4567",
+  "email": "info@bergertransport.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressRegion": "Győr-Moson-Sopron",
+    "addressCountry": "HU"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": "47.6815",
+    "longitude": "17.6355"
+  },
+  "areaServed": [
+    {
+      "@type": "GeoCircle",
+      "geoMidpoint": {
+        "@type": "GeoCoordinates",
+        "latitude": "50.0",
+        "longitude": "10.0"
+      },
+      "geoRadius": "2000000"
+    }
+  ],
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      "opens": "07:00",
+      "closes": "19:00"
+    }
+  ],
+  "serviceType": [
+    "Közúti fuvarozás",
+    "Expressz szállítás",
+    "Raktározás",
+    "Nemzetközi fuvarozás",
+    "LNG kamionos szállítás"
+  ],
+  "knowsAbout": [
+    "Logisztika",
+    "Fuvarozás",
+    "LNG technológia",
+    "Környezetbarát szállítás"
+  ],
+  "slogan": "Modern flotta Európában - LNG hajtású környezetbarát logisztika",
+  "foundingDate": "2009",
+  "numberOfEmployees": {
+    "@type": "QuantitativeValue",
+    "value": "50"
+  },
+  "sameAs": [
+    "https://www.facebook.com/profile.php?id=100089573075738"
+  ],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.8",
+    "reviewCount": "127"
+  }
+}
+</script>
+
+<!-- Breadcrumb Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Főoldal",
+      "item": "https://berger-transport.hu/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Szolgáltatások",
+      "item": "https://berger-transport.hu/#services"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Rólunk",
+      "item": "https://berger-transport.hu/#about"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "Kapcsolat",
+      "item": "https://berger-transport.hu/#contact"
+    }
+  ]
+}
+</script>
+
+<!-- Service Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Közúti áruszállítás",
+  "provider": {
+    "@type": "TransportationCompany",
+    "name": "Berger Transport & CO"
+  },
+  "areaServed": {
+    "@type": "Place",
+    "name": "Európa"
+  },
+  "offers": [
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Teljes rakományos fuvarozás (FTL)",
+        "description": "Modern LNG kamionokkal teljes rakományok szállítása Európa-szerte"
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Részrakományos fuvarozás (LTL)",
+        "description": "Költséghatékony megoldás kisebb mennyiségű áruk szállítására"
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Expressz szállítás",
+        "description": "24-72 órás gyors kézbesítés időkritikus küldemények esetén"
+      }
+    },
+    {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Raktározás",
+        "description": "Biztonságos tárolás és készletkezelés modern WMS rendszerrel"
+      }
+    }
+  ]
+}
+</script>
+
 <style>
 :root {
   --bg: #080b0f;
